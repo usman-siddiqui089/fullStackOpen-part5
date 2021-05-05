@@ -8,6 +8,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -20,6 +23,7 @@ const App = () => {
     if(loggedInUserJSON){
       const user = JSON.parse(loggedInUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -58,6 +62,36 @@ const App = () => {
           {user.username} is logged in
           <button onClick={handleLogout}>Logout</button>
         </p>
+        <form onSubmit={addBlog}>
+          <div>
+            Title:
+            <input 
+              type="text"
+              name="Title"
+              value={title}
+              onChange={ ( {target} ) => setTitle(target.value) }
+            />
+          </div>
+          <div>
+            Author:
+            <input 
+              type="text"
+              name="Author"
+              value={author}
+              onChange={ ( {target} ) => setAuthor(target.value) }
+            />
+          </div>
+          <div>
+            Blog URL:
+            <input 
+              type="text"
+              name="Url"
+              value={url}
+              onChange={ ( {target} ) => setUrl(target.value) }
+            />
+          </div>
+          <button type='submit'>Add</button>
+        </form>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
@@ -73,6 +107,7 @@ const App = () => {
       })
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       setUser(user)
+      blogService.setToken(user.token)
       setUsername('')
       setPassword('')
     } catch (error) {
@@ -83,6 +118,23 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('loggedInUser')
     setUser(null)
+  }
+
+  const addBlog = async (event) => {
+    event.preventDefault()
+    const newBlog = {
+      title: title,
+      author: author,
+      url: url
+    }
+
+    const savedBlog = await blogService.create(newBlog)
+    if(savedBlog){
+      setBlogs(blogs.concat(savedBlog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    }
   }
 
   if(user === null){
