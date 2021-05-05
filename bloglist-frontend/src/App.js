@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import NewBlogForm from './components/NewBlog'
+import LoginForm from './components/Login'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -32,33 +34,33 @@ const App = () => {
     }
   }, [])
 
+  const setUsernameVal = (event) => {
+    setUsername(event.target.value)
+  }
+
+  const setPasswordVal = (event) => {
+    setPassword(event.target.value)
+  }
+
   const loginForm = () => (
     <>
       <h2>Login to Application</h2>
       <Notification message={notification.message} type={notification.type}/>
-      <form onSubmit={handleLogin}>
-        <div>
-          Enter Username: 
-            <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-        </div>
-        <div>
-          Enter Password: 
-            <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-        </div>
-        <button type='submit'>Login</button>
-      </form>
+      <LoginForm usernameVal={username} passwordVal={password} onUsernameChange={setUsernameVal} onPasswordChange={setPasswordVal} onSubmitHandler={handleLogin}/>
     </>
   )
+
+  const setTitleVal = (event) => {
+    setTitle(event.target.value)
+  }
+
+  const setAuthorVal = (event) => {
+    setAuthor(event.target.value)
+  }
+
+  const setUrlVal = (event) => {
+    setUrl(event.target.value)
+  }
 
   const blogsList = () => (
     <>
@@ -69,36 +71,7 @@ const App = () => {
           {user.username} is logged in
           <button onClick={handleLogout}>Logout</button>
         </p>
-        <form onSubmit={addBlog}>
-          <div>
-            Title:
-            <input 
-              type="text"
-              name="Title"
-              value={title}
-              onChange={ ( {target} ) => setTitle(target.value) }
-            />
-          </div>
-          <div>
-            Author:
-            <input 
-              type="text"
-              name="Author"
-              value={author}
-              onChange={ ( {target} ) => setAuthor(target.value) }
-            />
-          </div>
-          <div>
-            Blog URL:
-            <input 
-              type="text"
-              name="Url"
-              value={url}
-              onChange={ ( {target} ) => setUrl(target.value) }
-            />
-          </div>
-          <button type='submit'>Add</button>
-        </form>
+        <NewBlogForm titleVal={title} urlVal={url} authorVal={author} onTitleChange={setTitleVal} onAuthorChange={setAuthorVal} onUrlChange={setUrlVal} onSubmitHandler={addBlog}/>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
