@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +12,10 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState({
+    message: null,
+    type: null
+  })
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -30,6 +35,7 @@ const App = () => {
   const loginForm = () => (
     <>
       <h2>Login to Application</h2>
+      <Notification message={notification.message} type={notification.type}/>
       <form onSubmit={handleLogin}>
         <div>
           Enter Username: 
@@ -58,6 +64,7 @@ const App = () => {
     <>
       <div>
         <h2>blogs</h2>
+        <Notification message={notification.message} type={notification.type}/>
         <p>
           {user.username} is logged in
           <button onClick={handleLogout}>Logout</button>
@@ -99,6 +106,20 @@ const App = () => {
     </>
   )
 
+  const displayNotification  = (type, message) => {
+    const notification = {
+      message: message,
+      type: type
+    }
+    setNotification(notification)
+    setTimeout(() => {
+      setNotification({
+        message: null,
+        type: null
+      })
+    }, 5000);
+  }
+  
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -111,7 +132,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (error) {
-      alert('Error! Wrong Credentials')
+      const message = 'Sorry! Credentials not found. Try again'
+      const type = 'error'
+      displayNotification(type, message)
     }
   }
 
@@ -134,6 +157,9 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      const message = `a new blog ${savedBlog.title} by ${savedBlog.author} added successfully!`
+      const type = 'success'
+      displayNotification(type, message)
     }
   }
 
