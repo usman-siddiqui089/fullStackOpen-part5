@@ -17,9 +17,9 @@ const App = () => {
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => {
+      setBlogs(blogs)
+    })  
   }, [])
 
   useEffect(() => {
@@ -39,24 +39,27 @@ const App = () => {
     </>
   )
 
-  const blogsList = () => (
-    <>
-      <div>
-        <h2>blogs</h2>
-        <Notification message={notification.message} type={notification.type}/>
-        <p>
-          {user.username} is logged in
-          <button onClick={handleLogout}>Logout</button>
-        </p>
-        <Togglable buttonLabel='Create New Blog' ref={blogFormRef}>
-          <NewBlogForm createBlog={addBlog}/>
-        </Togglable>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} likeHandler={updateBlog}/>
-        )}
-      </div>
-    </>
-  )
+  const blogsList = () => {
+    const sortedBlogs = blogs.sort((firstVal, secondVal) =>  secondVal.likes - firstVal.likes)
+    return (
+      <>
+        <div>
+          <h2>blogs</h2>
+          <Notification message={notification.message} type={notification.type}/>
+          <p>
+            {user.username} is logged in
+            <button onClick={handleLogout}>Logout</button>
+          </p>
+          <Togglable buttonLabel='Create New Blog' ref={blogFormRef}>
+            <NewBlogForm createBlog={addBlog}/>
+          </Togglable>
+          {sortedBlogs.map(blog =>
+            <Blog key={blog.id} blog={blog} likeHandler={updateBlog}/>
+          )}
+        </div>
+      </>
+    )
+  }
 
   const displayNotification  = (type, message) => {
     const notification = {
