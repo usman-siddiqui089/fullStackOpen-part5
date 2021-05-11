@@ -1,16 +1,33 @@
-import React from 'react'
+import React, {useState} from 'react'
 
-const NewBlogForm = ({titleVal, authorVal, urlVal, onTitleChange, onAuthorChange, onUrlChange, onSubmitHandler}) => {
+const NewBlogForm = ({createBlog}) => {
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
+
+    const addBlog = async (event) => {
+        event.preventDefault()
+        const newBlogData = {
+          title: title,
+          author: author,
+          url: url
+        }
+        createBlog(newBlogData)
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+    }
+
     return (
         <>
-            <form onSubmit={onSubmitHandler}>
+            <form onSubmit={addBlog}>
                 <div>
                     Title:
                     <input 
                     type="text"
                     name="Title"
-                    value={titleVal}
-                    onChange={onTitleChange}
+                    value={title}
+                    onChange={({target}) => setTitle(target.value)}
                     />
                 </div>
                 <div>
@@ -18,8 +35,8 @@ const NewBlogForm = ({titleVal, authorVal, urlVal, onTitleChange, onAuthorChange
                     <input 
                     type="text"
                     name="Author"
-                    value={authorVal}
-                    onChange={onAuthorChange}
+                    value={author}
+                    onChange={({target}) => setAuthor(target.value)}
                     />
                 </div>
                 <div>
@@ -27,8 +44,8 @@ const NewBlogForm = ({titleVal, authorVal, urlVal, onTitleChange, onAuthorChange
                     <input 
                     type="text"
                     name="Url"
-                    value={urlVal}
-                    onChange={onUrlChange}
+                    value={url}
+                    onChange={({target}) => setUrl(target.value)}
                     />
                 </div>
                 <button type='submit'>Add</button>

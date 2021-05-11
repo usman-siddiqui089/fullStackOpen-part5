@@ -9,12 +9,7 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notification, setNotification] = useState({
     message: null,
     type: null
@@ -36,33 +31,13 @@ const App = () => {
     }
   }, [])
 
-  const setUsernameVal = (event) => {
-    setUsername(event.target.value)
-  }
-
-  const setPasswordVal = (event) => {
-    setPassword(event.target.value)
-  }
-
   const loginForm = () => (
     <>
       <h2>Login to Application</h2>
       <Notification message={notification.message} type={notification.type}/>
-      <LoginForm usernameVal={username} passwordVal={password} onUsernameChange={setUsernameVal} onPasswordChange={setPasswordVal} onSubmitHandler={handleLogin}/>
+      <LoginForm loginHandler={handleLogin}/>
     </>
   )
-
-  const setTitleVal = (event) => {
-    setTitle(event.target.value)
-  }
-
-  const setAuthorVal = (event) => {
-    setAuthor(event.target.value)
-  }
-
-  const setUrlVal = (event) => {
-    setUrl(event.target.value)
-  }
 
   const blogsList = () => (
     <>
@@ -74,7 +49,7 @@ const App = () => {
           <button onClick={handleLogout}>Logout</button>
         </p>
         <Togglable buttonLabel='Create New Blog' ref={blogFormRef}>
-          <NewBlogForm titleVal={title} urlVal={url} authorVal={author} onTitleChange={setTitleVal} onAuthorChange={setAuthorVal} onUrlChange={setUrlVal} onSubmitHandler={addBlog}/>
+          <NewBlogForm createBlog={addBlog}/>
         </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
@@ -97,17 +72,15 @@ const App = () => {
     }, 5000);
   }
   
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async (userCred) => {
+    //event.preventDefault()
     try {
-      const user = await loginService.login({
-        username, password
-      })
+      const user = await loginService.login(userCred)
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
-      setUsername('')
-      setPassword('')
+      // setUsername('')
+      // setPassword('')
     } catch (error) {
       const message = 'Sorry! Credentials not found. Try again'
       const type = 'error'
@@ -120,20 +93,11 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const newBlog = {
-      title: title,
-      author: author,
-      url: url
-    }
+  const addBlog = async (blogObj) => {
     blogFormRef.current.toggleVisibility()
-    const savedBlog = await blogService.create(newBlog)
+    const savedBlog = await blogService.create(blogObj)
     if(savedBlog){
       setBlogs(blogs.concat(savedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       const message = `a new blog ${savedBlog.title} by ${savedBlog.author} added successfully!`
       const type = 'success'
       displayNotification(type, message)

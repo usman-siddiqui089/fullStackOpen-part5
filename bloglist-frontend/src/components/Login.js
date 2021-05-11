@@ -1,25 +1,39 @@
-import React from 'react'
+import React, {useState} from 'react'
 
-const LoginForm = ({onSubmitHandler, usernameVal, passwordVal, onUsernameChange, onPasswordChange}) => {
+const LoginForm = ({loginHandler}) => {
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+
+    const handleLogin = async (event) => {
+        event.preventDefault()
+        const userCred = {
+            username,
+            password
+        }
+        loginHandler(userCred)
+        setUsername('')
+        setPassword('')
+    }
+
     return (
         <>
-            <form onSubmit={onSubmitHandler}>
+            <form onSubmit={handleLogin}>
                 <div>
                 Enter Username: 
                     <input
                     type="text"
-                    value={usernameVal}
+                    value={username}
                     name="Username"
-                    onChange={onUsernameChange}
+                    onChange={({target}) => setUsername(target.value)}
                     />
                 </div>
                 <div>
                 Enter Password: 
                     <input
                     type="password"
-                    value={passwordVal}
+                    value={password}
                     name="Password"
-                    onChange={onPasswordChange}
+                    onChange={({target}) => setPassword(target.value)}
                     />
                 </div>
                 <button type='submit'>Login</button>
