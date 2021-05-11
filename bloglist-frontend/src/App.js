@@ -52,17 +52,11 @@ const App = () => {
           <NewBlogForm createBlog={addBlog}/>
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} likeHandler={updateBlog}/>
         )}
       </div>
     </>
   )
-
-  // const consoleBlogs = () => {
-  //   blogs.map(blog => console.log(blog))
-  // }
-
-  // consoleBlogs()
 
   const displayNotification  = (type, message) => {
     const notification = {
@@ -79,14 +73,11 @@ const App = () => {
   }
   
   const handleLogin = async (userCred) => {
-    //event.preventDefault()
     try {
       const user = await loginService.login(userCred)
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
-      // setUsername('')
-      // setPassword('')
     } catch (error) {
       const message = 'Sorry! Credentials not found. Try again'
       const type = 'error'
@@ -108,6 +99,15 @@ const App = () => {
       const type = 'success'
       displayNotification(type, message)
     }
+  }
+
+  const updateBlog = async (event) => {
+    const id = event.target.value.toString()
+    const targetBlog = blogs.find(blog => blog.id === id)
+    const updatedBlog = await blogService.update(id, {
+      likes: targetBlog.likes + 1
+    })
+    setBlogs(blogs.map(blog => blog.id !== id ? blog : updatedBlog))
   }
 
   if(user === null){
