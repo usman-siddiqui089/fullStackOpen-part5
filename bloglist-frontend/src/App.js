@@ -54,7 +54,7 @@ const App = () => {
             <NewBlogForm createBlog={addBlog}/>
           </Togglable>
           {sortedBlogs.map(blog =>
-            <Blog key={blog.id} blog={blog} likeHandler={updateBlog}/>
+            <Blog key={blog.id} blog={blog} likeHandler={updateBlog} removeBlogHandler={removeBlog} currentUserName={user.username}/>
           )}
         </div>
       </>
@@ -111,6 +111,19 @@ const App = () => {
       likes: targetBlog.likes + 1
     })
     setBlogs(blogs.map(blog => blog.id !== id ? blog : updatedBlog))
+  }
+
+  const removeBlog = async (event) => {
+    const id = event.target.value.toString()
+    const targetBlog = blogs.find(blog => blog.id === id)
+    const confirmation = window.confirm(`Remove blog ${targetBlog.title} by ${targetBlog.author}`)
+    if(confirmation){
+      await blogService.remove(id)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+      const message = `${targetBlog.title} by ${targetBlog.author} removed successfully!`
+      const type = 'success'
+      displayNotification(type, message)
+    }
   }
 
   if(user === null){
