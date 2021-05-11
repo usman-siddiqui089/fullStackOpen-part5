@@ -58,6 +58,12 @@ const App = () => {
     </>
   )
 
+  // const consoleBlogs = () => {
+  //   blogs.map(blog => console.log(blog))
+  // }
+
+  // consoleBlogs()
+
   const displayNotification  = (type, message) => {
     const notification = {
       message: message,
