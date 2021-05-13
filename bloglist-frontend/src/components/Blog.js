@@ -1,6 +1,6 @@
 import React from 'react'
 import Togglable from './Togglable'
-const Blog = ({blog, likeHandler, removeBlogHandler, currentUserName}) => {
+const Blog = ({ blog, likeHandler, removeBlogHandler, currentUserName }) => {
 
   const blogStyle = {
     paddingTop: 10,
@@ -9,10 +9,10 @@ const Blog = ({blog, likeHandler, removeBlogHandler, currentUserName}) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  const showWhenMatched = {display: (blog.user.username === currentUserName) ? '' : 'none'}
+  const showWhenMatched = { display: (blog.user.username === currentUserName) ? '' : 'none' }
   return (
     <div style={blogStyle}>
-      {blog.title} by <em><strong>{blog.author}</strong></em> 
+      {blog.title} by <em><strong>{blog.author}</strong></em>
       &nbsp;<Togglable buttonLabel='View Details' buttonHideLabel='Hide Details'>
         <div>
           <p>{blog.url}</p>
@@ -22,7 +22,7 @@ const Blog = ({blog, likeHandler, removeBlogHandler, currentUserName}) => {
         </div>
       </Togglable>
     </div>
-  ) 
+  )
 }
 
 export default Blog

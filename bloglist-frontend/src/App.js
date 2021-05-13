@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs => {
       setBlogs(blogs)
-    })  
+    })
   }, [])
 
   useEffect(() => {
@@ -72,9 +72,9 @@ const App = () => {
         message: null,
         type: null
       })
-    }, 5000);
+    }, 5000)
   }
-  
+
   const handleLogin = async (userCred) => {
     try {
       const user = await loginService.login(userCred)
