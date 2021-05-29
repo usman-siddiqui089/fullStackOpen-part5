@@ -13,9 +13,10 @@ describe('<Blog />', () => {
       username: 'testUser'
     }
   }
+  const likeHandler = jest.fn()
   beforeEach(() => {
     component = render(
-      <Blog blog={blog}/>
+      <Blog blog={blog} likeHandler={likeHandler}/>
     )
   })
   test('renders content' , () => {
@@ -40,5 +41,15 @@ describe('<Blog />', () => {
     expect(likes).toBeVisible()
     const username = component.container.querySelector('.blogUsername')
     expect(username).toBeVisible()
+  })
+  test('clicks blog like button', () => {
+    const button = component.getByText('View Details')
+    expect(button).toBeDefined()
+    fireEvent.click(button)
+    const likeButton = component.getByText('Like')
+    expect(likeButton).toBeDefined()
+    fireEvent.click(likeButton)
+    fireEvent.click(likeButton)
+    expect(likeHandler.mock.calls).toHaveLength(2)
   })
 })
