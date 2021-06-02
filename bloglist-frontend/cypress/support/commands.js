@@ -10,7 +10,16 @@
 //
 //
 // -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
+Cypress.Commands.add('login', ({ username, password }) => {
+  cy.request({
+    url: 'http://localhost:3003/api/login',
+    method: 'POST',
+    body: { username, password }
+  }).then(({ body }) => {
+    window.localStorage.setItem('loggedInUser', JSON.stringify(body))
+    cy.visit('http://localhost:3000')
+  })
+})
 //
 //
 // -- This is a child command --

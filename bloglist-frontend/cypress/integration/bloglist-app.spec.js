@@ -6,6 +6,10 @@ describe('BlogList App Test', () => {
     name: 'Test User',
     password: 'secretTestPass'
   }
+  const credentials = {
+    username: user.username,
+    password: user.password
+  }
   describe('Login through UI', () => {
     before(() => {
       cy.request('POST', 'http://localhost:3003/api/testing/reset')
@@ -22,6 +26,25 @@ describe('BlogList App Test', () => {
       cy.get('html').should('contain', `${user.username} is logged in`)
     })
   })
+
+  describe('New Blog for Logged In User', () => {
+    before(() => {
+      cy.request('POST', 'http://localhost:3003/api/testing/reset')
+      cy.request('POST', 'http://localhost:3003/api/users', user)
+      cy.login(credentials)
+    })
+
+    it('create new blog', () => {
+      cy.contains('Create New Blog').click()
+      cy.get('input[name=Title]').type('first blog')
+      cy.get('input[name=Author]').type('anonymous')
+      cy.get('input[name=Url]').type('www.testBlog.com')
+      cy.contains('Add').click()
+      cy.get('.success').should('contain', 'a new blog first blog by anonymous added successfully')
+      cy.get('html').should('contain', 'first blog')
+    })
+  })
+
   describe('Login with invalid credentials', () => {
     before(() => {
       cy.request('POST', 'http://localhost:3003/api/testing/reset')
