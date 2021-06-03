@@ -12,12 +12,12 @@ const Blog = ({ blog, likeHandler, removeBlogHandler, currentUserName }) => {
 
   const showWhenMatched = { display: (blog.user.username === currentUserName) ? '' : 'none' }
   return (
-    <div style={blogStyle}>
+    <div id="blogDiv" style={blogStyle}>
       <span className="blogTitle">{blog.title}</span> by <span className="blogAuthor"><em><strong>{blog.author}</strong></em></span>
       &nbsp;<Togglable buttonLabel='View Details' buttonHideLabel='Hide Details'>
         <div>
           <p className="blogURL">{blog.url}</p>
-          <p className="blogLikes">{blog.likes}&nbsp;<button onClick={likeHandler} value={blog.id}>Like</button></p>
+          <p className="blogLikes"><span id="likesValue">{blog.likes}&nbsp;</span><button onClick={likeHandler} value={blog.id}>Like</button></p>
           <p className="blogUsername">{blog.user.username}</p>
           <button style={showWhenMatched} onClick={removeBlogHandler} value={blog.id}>Remove Blog</button>
         </div>

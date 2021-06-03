@@ -61,6 +61,42 @@ describe('BlogList App Test', () => {
     })
   })
 
+  describe('Most Likes Blog', () => {
+    let likesArr = []
+    before(() => {
+      cy.request('POST', 'http://localhost:3003/api/testing/reset')
+      cy.request('POST', 'http://localhost:3003/api/users', user)
+      cy.login(credentials)
+      for(let i=0; i<4; i++){
+        const rand = Math.floor(Math.random() * 100)
+        cy.createBlog({
+          title: `blog ${i}`,
+          author: `Anon#${i}`,
+          url: `www.blog${i}.com`,
+          likes: rand
+        })
+      }
+    })
+    it('fetch blog likes based on order', () => {
+      cy.get('html').should('contain', 'blog 1')
+      for(let i=0; i<4; i++){
+        cy.contains(`blog ${i}`).parent().contains('View Details').click()
+        cy.wait(2000)
+      }
+      for(let i=0; i<4; i++){
+        cy.get('.blogLikes > #likesValue').eq(i).invoke('text').then((text) => {
+          const val = text
+          likesArr.push(parseInt(val))
+        })
+      }
+    })
+    it('verify blogs order based on likes', () => {
+      for(let i=0; i<likesArr.length-1; i++){
+        expect(likesArr[i]).to.be.greaterThan(likesArr[i+1])
+      }
+    })
+  })
+
   describe('Login with invalid credentials', () => {
     before(() => {
       cy.request('POST', 'http://localhost:3003/api/testing/reset')
