@@ -10,6 +10,11 @@ describe('BlogList App Test', () => {
     username: user.username,
     password: user.password
   }
+  const blog = {
+    title: 'first blog',
+    author: 'anonymous',
+    url: 'www.testBlog.com'
+  }
   describe('Login through UI', () => {
     before(() => {
       cy.request('POST', 'http://localhost:3003/api/testing/reset')
@@ -36,12 +41,23 @@ describe('BlogList App Test', () => {
 
     it('create new blog', () => {
       cy.contains('Create New Blog').click()
-      cy.get('input[name=Title]').type('first blog')
-      cy.get('input[name=Author]').type('anonymous')
-      cy.get('input[name=Url]').type('www.testBlog.com')
+      cy.get('input[name=Title]').type(blog.title)
+      cy.get('input[name=Author]').type(blog.author)
+      cy.get('input[name=Url]').type(blog.url)
       cy.contains('Add').click()
-      cy.get('.success').should('contain', 'a new blog first blog by anonymous added successfully')
-      cy.get('html').should('contain', 'first blog')
+      cy.get('.success').should('contain', `a new blog ${blog.title} by ${blog.author} added successfully`)
+      cy.get('html').should('contain', `${blog.title}`)
+    })
+
+    it('User can like blog', () => {
+      cy.contains('View Details').click()
+      cy.contains('Like').click()
+      cy.get('.blogLikes').should('contain', 1)
+    })
+
+    it('Only creator can remove blog', () => {
+      cy.contains('Remove Blog').click()
+      cy.get('.success').should('contain', `${blog.title} by ${blog.author} removed successfully!`)
     })
   })
 
